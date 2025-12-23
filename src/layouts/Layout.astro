@@ -1,0 +1,36 @@
+---
+import "../styles/global.css";
+import ThemeProvider from "@components/theme/ThemeProvider";
+import Navbar from "@components/Navbar";
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const {
+	title = "Pedro Bastos Leite",
+	description = "Desenvolvedor e estudante de Ciência da Computação na PUCPR. Estagiário em Desenvolvimento Web com experiência em Laravel, APIs e tecnologias modernas. Portfólio com projetos e habilidades.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="pt-BR">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="description" content={description} />
+		<title>{title}</title>
+	</head>
+	<body class="min-h-screen flex flex-col">
+		<ThemeProvider client:load attribute="class" defaultTheme="light" enableSystem>
+			<Navbar client:load />
+			<main class="w-full h-full overflow-auto">
+				<slot />
+			</main>
+		</ThemeProvider>
+	</body>
+</html>
+
