@@ -1,65 +1,86 @@
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
-import { useTheme } from "next-themes";
+import { useEffect, useState } from "react"
+import { Eclipse, Moon, Sun } from "lucide-react"
+import { Button } from "../ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu"
+
+type Theme = "light" | "dark" | "system"
 
 export function ThemeToggle() {
-	const { theme, setTheme, resolvedTheme } = useTheme();
-	const [mounted, setMounted] = useState(false);
-	const [currentTheme, setCurrentTheme] = useState<"light" | "dark">("light");
+  const [theme, setThemeState] = useState<Theme>("system")
+  const [mounted, setMounted] = useState(false)
 
-	useEffect(() => {
-		setMounted(true);
-		// Verifica o tema atual do HTML
-		const html = document.documentElement;
-		const isDark = html.classList.contains("dark");
-		setCurrentTheme(isDark ? "dark" : "light");
-	}, []);
+  useEffect(() => {
+    setMounted(true)
+    const stored = localStorage.getItem("theme") as Theme | null
+    if (stored) {
+      setThemeState(stored)
+      applyTheme(stored)
+    } else {
+      applyTheme("system")
+    }
+  }, [])
 
-	useEffect(() => {
-		if (mounted && resolvedTheme) {
-			setCurrentTheme(resolvedTheme as "light" | "dark");
-		}
-	}, [mounted, resolvedTheme]);
+  const applyTheme = (newTheme: Theme) => {
+    const root = document.documentElement
+    root.classList.remove("light", "dark")
 
-	const handleClick = () => {
-		if (!setTheme) return;
+    if (newTheme === "system") {
+      const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches
+      if (systemDark) {
+        root.classList.add("dark")
+      } else {
+        root.classList.add("light")
+      }
+    } else {
+      root.classList.add(newTheme)
+    }
+  }
 
-		// Determina o próximo tema
-		const html = document.documentElement;
-		const isCurrentlyDark = html.classList.contains("dark");
-		const nextTheme = isCurrentlyDark ? "light" : "dark";
+  const setTheme = (newTheme: Theme) => {
+    setThemeState(newTheme)
+    localStorage.setItem("theme", newTheme)
+    applyTheme(newTheme)
+  }
 
-		// Aplica manualmente a classe no HTML
-		if (nextTheme === "dark") {
-			html.classList.add("dark");
-		} else {
-			html.classList.remove("dark");
-		}
+  if (!mounted) {
+    return (
+      <Button variant="outline" size="icon" disabled>
+        <Sun className="h-[1.2rem] w-[1.2rem]" />
+        <span className="sr-only">Toggle theme</span>
+      </Button>
+    )
+  }
 
-		// Atualiza o estado do next-themes
-		setTheme(nextTheme);
-		setCurrentTheme(nextTheme);
-	};
-
-	if (!mounted) {
-		return (
-			<div className="px-4 py-2 rounded border cursor-not-allowed opacity-50 inline-block">
-				☀️
-			</div>
-		);
-	}
-
-	const icon = currentTheme === "dark" ? "🌙" : "☀️";
-
-	return (
-		<button
-			onClick={handleClick}
-			className="px-4 py-2 rounded border cursor-pointer hover:opacity-80 active:scale-95 transition-all relative z-50"
-			aria-label={`Tema atual: ${currentTheme}`}
-			type="button"
-		>
-			{icon}
-		</button>
-	);
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" size="icon">
+          <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+          <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
+          <span className="sr-only">Toggle theme</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={() => setTheme("light")}>
+          <Sun className="mr-2 h-4 w-4" />
+          Claro
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("dark")}>
+          <Moon className="mr-2 h-4 w-4" />
+          Escuro
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("system")}>
+          <Eclipse className="mr-2 h-4 w-4" />
+          Sistema
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
 }
