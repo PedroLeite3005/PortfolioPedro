@@ -1,0 +1,63 @@
+[
+    {
+        "icon": "Briefcase",
+        "type": "Experiência",
+        "data": 
+        [
+            {
+                "title": "Estagiário na Engepeças Curitiba",
+                "date": "Agosto de 2023 - Janeiro de 2025",
+                "description": "Atuando com Frontend, Laravel, Livewire, APIs e administração de loja Magento. Mais detalhes no Currículo."
+            },
+            {
+                "title": "Estagiário na Rodoparaná Curitiba",
+                "date": "Maio de 2025 - Setembro de 2025",
+                "description": "Atuando com Frontend, Node.js, Golang, APIs, Protheus e SQL Server. Mais detalhes no Currículo."
+            },
+            {
+                "title": "Analista de Sistemas JR na Rodoparaná Curitiba",
+                "date": "Setembro de 2025 - Atualmente",
+                "description": "Atuando com Frontend, Node.js, Golang, APIs, Protheus, SQL Server e Servidor Linux. Mais detalhes no Currículo."
+            }
+        ]      
+    },
+    {
+        "icon": "GraduationCap",
+        "type": "Formação",
+        "data": 
+        [
+            {
+                "title": "Graduação em Ciência da Computação (PUCPR)",
+                "date": "2023 - 2026",
+                "description": "Estudo linguagens como Python, Java, C, e áreas como redes, big data, cibersegurança, machine learning e IA."
+            }
+        ]
+    },
+    {
+        "icon": "BookOpen",
+        "type": "Cursos",
+        "data": 
+        [
+            {
+                "title": "",
+                "description": "Web Bootcamp (Udemy)"
+            },
+            {
+                "title": "",
+                "description": "UML – Guia Básico (Udemy)"
+            },
+            {
+                "title": "",
+                "description": "Databricks Fundamentals (Databricks Academy)"
+            },
+            {
+                "title": "",
+               "description": "Montagem de Computadores e Redes (Microlins)"
+            },
+            {
+                "title": "",
+                "description": "Informática Essencial (Microlins)"
+            }
+        ]
+    }
+]

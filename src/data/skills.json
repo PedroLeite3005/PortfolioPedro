@@ -1,0 +1,119 @@
+[
+    {
+        "type": "Frontend",
+        "icon": "Code",
+        "data": [
+            {
+                "name": "Alpine.js"
+            },
+            {
+                "name": "Astro"
+            },
+            {
+                "name": "Bootstrap"
+            },
+            {
+                "name": "CSS"
+            },
+            {
+                "name": "HTML"
+            },
+            {
+                "name": "JavaScript"
+            },
+            {
+                "name": "Next.js"
+            },
+            {
+                "name": "React"
+            },
+            {
+                "name": "Tailwind CSS"
+            },
+            {
+                "name": "TypeScript"
+            }
+        ]
+    },
+    {
+        "type": "Backend",
+        "icon": "Database",
+        "data": [
+            {
+                "name": "API REST"
+            },
+            {
+                "name": "Assembly"
+            },
+            {
+                "name": "Big Data"
+            },
+            {
+                "name": "C"
+            },
+            {
+                "name": "Flask"
+            },
+            {
+                "name": "Golang"
+            },
+            {
+                "name": "Java"
+            },
+            {
+                "name": "Laravel"
+            },
+            {
+                "name": "MySQL"
+            },
+            {
+                "name": "Node.js"
+            },
+            {
+                "name": "PHP"
+            },
+            {
+                "name": "Python"
+            }
+        ]
+    },
+    {
+        "type": "Outros e Ferramentas",
+        "icon": "Globe",
+        "data": [
+            {
+                "name": "Databricks"
+            },
+            {
+                "name": "Git"
+            },
+            {
+                "name": "Google Cloud"
+            },
+            {
+                "name": "Linux"
+            },
+            {
+                "name": "Magento"
+            },
+            {
+                "name": "Manutenção e Montagem de Computadores"
+            },
+            {
+                "name": "Pacote Office"
+            },
+            {
+                "name": "Protheus"
+            },
+            {
+                "name": "Redes"
+            },
+            {
+                "name": "UML"
+            },
+            {
+                "name": "Windows"
+            }
+        ]
+    }
+]

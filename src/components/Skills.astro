@@ -1,0 +1,128 @@
+---
+import skillsData from "../data/skills.json";
+import { Code, Database, Globe, ChevronLeft, ChevronRight } from "lucide-react";
+
+const getIcon = (iconName: string) => {
+  const icons: Record<string, any> = {
+    Code,
+    Database,
+    Globe,
+  };
+  return icons[iconName] || Code;
+};
+---
+
+<section id="skills" class="py-16 px-4 bg-white dark:bg-slate-950">
+  <div class="container mx-auto">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-4xl font-bold text-center mb-12">Habilidades e Tecnologias</h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+        {skillsData.map((category, index) => {
+          const IconComponent = getIcon(category.icon);
+          
+          return (
+            <div class="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+              <div class="flex items-center gap-2 mb-4">
+                <IconComponent className="size-6" />
+                <h3 class="text-lg font-semibold">{category.type}</h3>
+              </div>
+              <div class="relative">
+                <button
+                  class="absolute left-[-16px] top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-slate-900 shadow rounded-full p-1 hover:bg-slate-100 dark:hover:bg-slate-800 scroll-btn-left"
+                  data-index={index}
+                  aria-label="Rolar para esquerda"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <div
+                  class="flex gap-2 overflow-x-hidden px-4 scroll-container"
+                  data-index={index}
+                >
+                  {category.data.map((skill) => (
+                    <span
+                      class="inline-flex items-center rounded-md bg-secondary px-3 py-1 text-sm font-medium text-secondary-foreground whitespace-nowrap"
+                    >
+                      {skill.name}
+                    </span>
+                  ))}
+                </div>
+                <button
+                  class="absolute right-[-16px] top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-slate-900 shadow rounded-full p-1 hover:bg-slate-100 dark:hover:bg-slate-800 scroll-btn-right"
+                  data-index={index}
+                  aria-label="Rolar para direita"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const scrollIntervals: Record<number, NodeJS.Timeout | null> = {};
+
+    const startScroll = (index: number, direction: 'left' | 'right') => {
+      const container = document.querySelector(`.scroll-container[data-index="${index}"]`) as HTMLElement;
+      if (!container) return;
+
+      const scrollAmount = direction === 'left' ? -10 : 10;
+      
+      scrollIntervals[index] = setInterval(() => {
+        container.scrollBy({ left: scrollAmount, behavior: 'auto' });
+      }, 16);
+    };
+
+    const stopScroll = (index: number) => {
+      if (scrollIntervals[index]) {
+        clearInterval(scrollIntervals[index]!);
+        scrollIntervals[index] = null;
+      }
+    };
+
+    // Botões de rolar para esquerda
+    document.querySelectorAll('.scroll-btn-left').forEach((btn) => {
+      const index = parseInt(btn.getAttribute('data-index') || '0');
+      
+      btn.addEventListener('mousedown', () => {
+        startScroll(index, 'left');
+      });
+      
+      btn.addEventListener('mouseup', () => {
+        stopScroll(index);
+      });
+      
+      btn.addEventListener('mouseleave', () => {
+        stopScroll(index);
+      });
+    });
+
+    // Botões de rolar para direita
+    document.querySelectorAll('.scroll-btn-right').forEach((btn) => {
+      const index = parseInt(btn.getAttribute('data-index') || '0');
+      
+      btn.addEventListener('mousedown', () => {
+        startScroll(index, 'right');
+      });
+      
+      btn.addEventListener('mouseup', () => {
+        stopScroll(index);
+      });
+      
+      btn.addEventListener('mouseleave', () => {
+        stopScroll(index);
+      });
+    });
+
+    // Limpar intervalos quando a página for descarregada
+    window.addEventListener('beforeunload', () => {
+      Object.values(scrollIntervals).forEach((interval) => {
+        if (interval) clearInterval(interval);
+      });
+    });
+  });
+</script>

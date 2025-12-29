@@ -1,0 +1,186 @@
+---
+import aboutData from "../data/about.json";
+import { Briefcase, GraduationCap, BookOpen } from "lucide-react";
+
+const getIcon = (iconName: string) => {
+  const icons: Record<string, any> = {
+    Briefcase,
+    GraduationCap,
+    BookOpen,
+  };
+  return icons[iconName] || Briefcase;
+};
+
+const getIconColor = (type: string) => {
+  const colors: Record<string, string> = {
+    Experiência: "text-blue-600",
+    Formação: "text-purple-600",
+    Cursos: "text-green-600",
+  };
+  return colors[type] || "text-slate-600";
+};
+---
+
+<section id="about" class="py-16 px-4 bg-white dark:bg-slate-900">
+  <div class="container mx-auto">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-4xl font-bold mb-8">Sobre mim</h2>
+      <p class="text-lg text-slate-600 dark:text-slate-300 leading-relaxed mb-8">
+        Me chamo Pedro Bastos Leite, sou estudante de Ciência da Computação na PUCPR e atualmente atuo como Analista de Sistemas JR.
+        Tenho interesse especial em desenvolvimento web full stack, integrações via API e aplicações modernas com JavaScript e Tailwind.
+        Gosto de aprender coisas novas e explorar áreas como big data, redes e automação.
+      </p>
+
+      <div class="grid md:grid-cols-3 gap-6 text-left mt-12">
+        {aboutData.map((section) => {
+          const IconComponent = getIcon(section.icon);
+          const iconColor = getIconColor(section.type);
+          const hasMultipleItems = section.data.length > 1;
+
+          return (
+            <div class="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+              <div class={`flex ${hasMultipleItems ? 'justify-between' : 'flex-col'} items-${hasMultipleItems ? 'center' : 'start'} gap-2 mb-4`}>
+                <div class="flex items-center gap-2">
+                  <IconComponent className={`size-6 ${iconColor}`} />
+                  <h3 class="text-md font-semibold leading-none tracking-tight">{section.type}</h3>
+                </div>
+
+                {hasMultipleItems && (() => {
+                  const isCursos = section.type === 'Cursos';
+                  const itemsPerPage = isCursos ? 5 : 1;
+                  const totalPages = Math.ceil(section.data.length / itemsPerPage);
+                  return (
+                    <div class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+                      <button 
+                        class="p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-700 prev-btn"
+                        data-section={section.type}
+                      >
+                        ‹
+                      </button>
+                      <span class="current-index" data-section={section.type}>1</span> / {totalPages}
+                      <button 
+                        class="p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-700 next-btn"
+                        data-section={section.type}
+                      >
+                        ›
+                      </button>
+                    </div>
+                  );
+                })()}
+              </div>
+
+              <div class="section-content" data-section={section.type}>
+                {section.type === 'Cursos' ? (
+                  <ul class="list-disc list-inside text-sm text-slate-600 dark:text-slate-400 space-y-1">
+                    {section.data.map((item, index) => {
+                      const itemsPerPage = 5;
+                      const pageIndex = Math.floor(index / itemsPerPage);
+                      const shouldShow = pageIndex === 0;
+                      
+                      return (
+                        <li 
+                          class={shouldShow ? '' : 'hidden'}
+                          data-index={index}
+                          data-section={section.type}
+                          data-page={pageIndex}
+                        >
+                          {item.description}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                ) : (
+                  section.data.map((item, index) => {
+                    const shouldShow = index === 0;
+                    
+                    return (
+                      <div 
+                        class={`text-sm text-slate-600 dark:text-slate-400 ${shouldShow ? '' : 'hidden'} item-content`}
+                        data-index={index}
+                        data-section={section.type}
+                        data-page={index}
+                      >
+                        {'title' in item && item.title && (
+                          <>
+                            <strong>{item.title}</strong>
+                            {'date' in item && item.date && <span class="block text-xs text-slate-500 dark:text-slate-500 mt-1">{item.date}</span>}
+                            <br />
+                          </>
+                        )}
+                        {item.description}
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const currentPages: Record<string, number> = {};
+    
+    // Inicializa as páginas para cada seção que tem múltiplos itens
+    document.querySelectorAll('.section-content[data-section]').forEach((section) => {
+      const sectionName = section.getAttribute('data-section');
+      if (sectionName) {
+        currentPages[sectionName] = 0;
+      }
+    });
+
+    const updatePage = (sectionName: string, page: number) => {
+      const isCursos = sectionName === 'Cursos';
+      const itemsPerPage = isCursos ? 5 : 1;
+      
+      // Para Cursos, seleciona apenas os <li> dentro da seção
+      // Para outras seções, seleciona os divs com classe item-content
+      const sectionElement = document.querySelector(`.section-content[data-section="${sectionName}"]`);
+      if (!sectionElement) return;
+      
+      const items = isCursos
+        ? sectionElement.querySelectorAll('li[data-section]')
+        : sectionElement.querySelectorAll('.item-content[data-section]');
+      
+      const totalPages = Math.ceil(items.length / itemsPerPage);
+      
+      if (page < 0) page = totalPages - 1;
+      if (page >= totalPages) page = 0;
+      
+      currentPages[sectionName] = page;
+      
+      items.forEach((item) => {
+        const itemIndex = parseInt(item.getAttribute('data-index') || '0');
+        const itemPage = isCursos 
+          ? Math.floor(itemIndex / itemsPerPage)
+          : itemIndex;
+        item.classList.toggle('hidden', itemPage !== page);
+      });
+
+      const indexSpan = document.querySelector(`.current-index[data-section="${sectionName}"]`);
+      if (indexSpan) {
+        indexSpan.textContent = String(page + 1);
+      }
+    };
+
+    document.querySelectorAll('.prev-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const sectionName = btn.getAttribute('data-section');
+        if (!sectionName) return;
+        updatePage(sectionName, currentPages[sectionName] - 1);
+      });
+    });
+
+    document.querySelectorAll('.next-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const sectionName = btn.getAttribute('data-section');
+        if (!sectionName) return;
+        updatePage(sectionName, currentPages[sectionName] + 1);
+      });
+    });
+  });
+</script>
