@@ -1,0 +1,395 @@
+---
+import { ExternalLink, Code2, AlertCircle } from "lucide-react";
+
+interface Repository {
+  id: number;
+  name: string;
+  html_url: string;
+  description: string;
+  language: string;
+  stargazers_count: number;
+  forks_count: number;
+  updated_at: string;
+  topics: string[];
+  homepage?: string;
+  size: number;
+}
+
+const languageColors: Record<string, string> = {
+  JavaScript: "bg-yellow-400",
+  TypeScript: "bg-blue-600",
+  Python: "bg-green-600",
+  Java: "bg-red-600",
+  "C++": "bg-blue-800",
+  CSS: "bg-purple-600",
+  HTML: "bg-orange-600",
+  React: "bg-cyan-400",
+  Vue: "bg-green-500",
+  PHP: "bg-indigo-600",
+  Go: "bg-cyan-600",
+  Rust: "bg-orange-800",
+  Swift: "bg-orange-500",
+  Kotlin: "bg-purple-700",
+};
+
+// Buscar repositórios no servidor
+let repos: Repository[] = [];
+let error: string | null = null;
+
+try {
+  const response = await fetch("https://api.github.com/users/PedroLeite3005/repos?per_page=100", {
+    headers: {
+      "User-Agent": "PortfolioPedro",
+    },
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+
+    repos = data
+      .filter((repo: any) => !repo.fork && repo.stargazers_count >= 0)
+      .sort((a: any, b: any) => {
+        if (b.stargazers_count !== a.stargazers_count) {
+          return b.stargazers_count - a.stargazers_count;
+        }
+        return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+      })
+      .map((repo: any) => ({
+        id: repo.id,
+        name: repo.name,
+        html_url: repo.html_url,
+        description: repo.description || "Sem descrição disponível",
+        language: repo.language,
+        stargazers_count: repo.stargazers_count,
+        forks_count: repo.forks_count,
+        updated_at: repo.updated_at,
+        topics: repo.topics || [],
+        homepage: repo.homepage,
+        size: repo.size,
+      }));
+  } else {
+    error = "Falha ao buscar repositórios";
+  }
+} catch (err) {
+  error = err instanceof Error ? err.message : "Ocorreu um erro";
+}
+
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("pt-BR", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+};
+
+const formatRepoName = (name: string) => {
+  return name
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (l) => l.toUpperCase());
+};
+
+const displayedRepos = repos.slice(0, 6);
+const hasMoreRepos = repos.length > 6;
+---
+
+<section id="projects" class="py-16 px-4 bg-white dark:bg-slate-900">
+  <div class="container mx-auto">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold mb-4 text-slate-900 dark:text-slate-100">Projetos</h2>
+        <p class="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+          Uma seleção dos meus projetos open-source no GitHub. Cada projeto representa uma jornada de aprendizado e
+          inovação.
+        </p>
+      </div>
+
+      {error ? (
+        <!-- Error State -->
+        <div class="text-center">
+          <div class="flex flex-col items-center justify-center py-12">
+            <AlertCircle className="w-12 h-12 text-red-500 mb-4" aria-hidden="true" />
+            <p class="text-lg text-slate-600 dark:text-slate-400 mb-4">Falha ao carregar repositórios</p>
+            <p class="text-sm text-slate-500 dark:text-slate-500 mb-4">{error}</p>
+          </div>
+        </div>
+      ) : repos.length === 0 ? (
+        <!-- Empty State -->
+        <div class="text-center py-12">
+          <Code2 className="w-12 h-12 text-slate-400 mx-auto mb-4" aria-hidden="true" />
+          <p class="text-lg text-slate-600 dark:text-slate-400">Nenhum repositório encontrado</p>
+        </div>
+      ) : (
+        <>
+          <!-- Projects Grid -->
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="repos-container">
+            {displayedRepos.map((repo) => {
+              const languageColor = languageColors[repo.language] || "bg-gray-400";
+              return (
+                <div class="group rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden">
+                  <div class="p-6">
+                    <div class="w-full h-48 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
+                      <div class="absolute inset-0 bg-black/20"></div>
+                      <svg class="w-16 h-16 text-white/90 z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <title>Código</title>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                      </svg>
+                      {repo.stargazers_count > 0 && (
+                        <div class="absolute top-2 right-2">
+                          <span class="inline-flex items-center rounded-md bg-black/20 text-white border border-white/20 px-2 py-1 text-xs font-medium">
+                            <svg class="w-3 h-3 mr-1 fill-current" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                              <title>Estrelas</title>
+                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                            </svg>
+                            {repo.stargazers_count}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div class="mb-4">
+                      <div class="flex items-start justify-between gap-2 mb-2">
+                        <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                          {formatRepoName(repo.name)}
+                        </h3>
+                        <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          {repo.homepage && (
+                            <a
+                              href={repo.homepage}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={`Abrir homepage do projeto ${formatRepoName(repo.name)}`}
+                              class="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded"
+                            >
+                              <svg class="w-4 h-4 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <title>Link externo</title>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                              </svg>
+                            </a>
+                          )}
+                          <a
+                            href={repo.html_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`Abrir repositório ${formatRepoName(repo.name)} no GitHub`}
+                            class="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded"
+                          >
+                            <svg class="w-4 h-4 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                              <title>Código fonte</title>
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                            </svg>
+                          </a>
+                        </div>
+                      </div>
+                      <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2">
+                        {repo.description}
+                      </p>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 mb-4">
+                      {repo.language && (
+                        <span class="inline-flex items-center rounded-md border border-input bg-background px-2 py-1 text-xs font-medium">
+                          <span class={`w-2 h-2 rounded-full ${languageColor} mr-1`}></span>
+                          {repo.language}
+                        </span>
+                      )}
+                      {repo.topics.slice(0, 2).map((topic) => (
+                        <span class="inline-flex items-center rounded-md bg-secondary px-2 py-1 text-xs font-medium text-secondary-foreground">
+                          {topic}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                      <div class="flex items-center gap-3">
+                        {repo.stargazers_count > 0 && (
+                          <span class="flex items-center gap-1" aria-label={`${repo.stargazers_count} estrelas`}>
+                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                              <title>Estrelas</title>
+                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                            </svg>
+                            {repo.stargazers_count}
+                          </span>
+                        )}
+                        {repo.forks_count > 0 && (
+                          <span class="flex items-center gap-1" aria-label={`${repo.forks_count} forks`}>
+                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                              <title>Forks</title>
+                              <path d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a7 7 0 017 7v1a1 1 0 11-2 0v-1A5 5 0 0011 9H5.414l2.293 2.293a1 1 0 11-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"></path>
+                            </svg>
+                            {repo.forks_count}
+                          </span>
+                        )}
+                      </div>
+                      <span class="flex items-center gap-1" aria-label={`Atualizado em ${formatDate(repo.updated_at)}`}>
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                          <title>Data de atualização</title>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        {formatDate(repo.updated_at)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <!-- Repositórios adicionais (ocultos inicialmente) -->
+          {hasMoreRepos && (
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 hidden" id="more-repos-container">
+              {repos.slice(6).map((repo) => {
+                const languageColor = languageColors[repo.language] || "bg-gray-400";
+                return (
+                  <div class="group rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden">
+                    <div class="p-6">
+                      <div class="w-full h-48 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 bg-black/20"></div>
+                        <svg class="w-16 h-16 text-white/90 z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                          <title>Código</title>
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                        </svg>
+                        {repo.stargazers_count > 0 && (
+                          <div class="absolute top-2 right-2">
+                            <span class="inline-flex items-center rounded-md bg-black/20 text-white border border-white/20 px-2 py-1 text-xs font-medium">
+                              <svg class="w-3 h-3 mr-1 fill-current" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                <title>Estrelas</title>
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                              </svg>
+                              {repo.stargazers_count}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div class="mb-4">
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                          <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                            {formatRepoName(repo.name)}
+                          </h3>
+                          <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            {repo.homepage && (
+                              <a
+                                href={repo.homepage}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                aria-label={`Abrir homepage do projeto ${formatRepoName(repo.name)}`}
+                                class="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded"
+                              >
+                                <svg class="w-4 h-4 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                  <title>Link externo</title>
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                </svg>
+                              </a>
+                            )}
+                            <a
+                              href={repo.html_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={`Abrir repositório ${formatRepoName(repo.name)} no GitHub`}
+                              class="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded"
+                            >
+                              <svg class="w-4 h-4 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <title>Código fonte</title>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                              </svg>
+                            </a>
+                          </div>
+                        </div>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2">
+                          {repo.description}
+                        </p>
+                      </div>
+
+                      <div class="flex flex-wrap gap-2 mb-4">
+                        {repo.language && (
+                          <span class="inline-flex items-center rounded-md border border-input bg-background px-2 py-1 text-xs font-medium">
+                            <span class={`w-2 h-2 rounded-full ${languageColor} mr-1`}></span>
+                            {repo.language}
+                          </span>
+                        )}
+                        {repo.topics.slice(0, 2).map((topic) => (
+                          <span class="inline-flex items-center rounded-md bg-secondary px-2 py-1 text-xs font-medium text-secondary-foreground">
+                            {topic}
+                          </span>
+                        ))}
+                      </div>
+
+                      <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                        <div class="flex items-center gap-3">
+                          {repo.stargazers_count > 0 && (
+                            <span class="flex items-center gap-1" aria-label={`${repo.stargazers_count} estrelas`}>
+                              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                <title>Estrelas</title>
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                              </svg>
+                              {repo.stargazers_count}
+                            </span>
+                          )}
+                          {repo.forks_count > 0 && (
+                            <span class="flex items-center gap-1" aria-label={`${repo.forks_count} forks`}>
+                              <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                                <title>Forks</title>
+                                <path d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a7 7 0 017 7v1a1 1 0 11-2 0v-1A5 5 0 0011 9H5.414l2.293 2.293a1 1 0 11-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"></path>
+                              </svg>
+                              {repo.forks_count}
+                            </span>
+                          )}
+                        </div>
+                        <span class="flex items-center gap-1" aria-label={`Atualizado em ${formatDate(repo.updated_at)}`}>
+                          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <title>Data de atualização</title>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                          </svg>
+                          {formatDate(repo.updated_at)}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {hasMoreRepos && (
+            <div class="text-center mt-12">
+              <button
+                id="show-more-btn"
+                aria-label="Mostrar todos os projetos"
+                class="inline-flex items-center justify-center gap-2 rounded-md border border-input bg-background px-6 py-3 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+              >
+                <span id="show-more-text">Mostrar Todos os {repos.length} Projetos</span>
+              </button>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  </div>
+</section>
+
+<script define:vars={{ reposCount: repos.length }}>
+  let showAll = false;
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const showMoreBtn = document.getElementById("show-more-btn");
+    const showMoreText = document.getElementById("show-more-text");
+    const moreReposContainer = document.getElementById("more-repos-container");
+
+    showMoreBtn?.addEventListener("click", () => {
+      showAll = !showAll;
+
+      if (moreReposContainer && showMoreText) {
+        if (showAll) {
+          moreReposContainer.classList.remove("hidden");
+          showMoreText.textContent = "Mostrar Menos";
+          showMoreBtn.setAttribute("aria-label", "Mostrar menos projetos");
+        } else {
+          moreReposContainer.classList.add("hidden");
+          showMoreText.textContent = `Mostrar Todos os ${reposCount} Projetos`;
+          showMoreBtn.setAttribute("aria-label", `Mostrar todos os ${reposCount} projetos`);
+        }
+      }
+    });
+  });
+</script>

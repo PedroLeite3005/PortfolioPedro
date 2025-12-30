@@ -117,7 +117,21 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px;
+  }
   body {
     @apply bg-background text-foreground;
+    /* Esconder scrollbar mas manter funcionalidade */
+    -ms-overflow-style: none; /* IE e Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  /* Esconder scrollbar no Chrome, Safari e Opera */
+  body::-webkit-scrollbar {
+    display: none;
+  }
+  html::-webkit-scrollbar {
+    display: none;
   }
 }
