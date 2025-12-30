@@ -21,33 +21,35 @@ const getIcon = (iconName: string) => {
           const IconComponent = getIcon(category.icon);
           
           return (
-            <div class="rounded-lg border bg-card text-card-foreground shadow-sm py-4 px-6">
+            <div class="rounded-lg border bg-card text-card-foreground shadow-sm py-4 px-6 overflow-hidden">
               <div class="flex items-center gap-2 mb-6">
                 <IconComponent className="size-5" />
                 <h3 class="text-md font-semibold">{category.type}</h3>
               </div>
-              <div class="relative">
+              <div class="relative -mx-2 md:mx-0">
                 <button
-                  class="absolute left-[-16px] top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-slate-900 shadow rounded-full p-1 hover:bg-slate-100 dark:hover:bg-slate-800 scroll-btn-left"
+                  class="hidden md:block absolute left-[-16px] top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-slate-900 shadow rounded-full p-1 hover:bg-slate-100 dark:hover:bg-slate-800 scroll-btn-left"
                   data-index={index}
                   aria-label="Rolar para esquerda"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
                 <div
-                  class="flex gap-2 overflow-x-hidden px-4 scroll-container"
+                  class="flex gap-2 overflow-x-auto md:overflow-x-hidden px-2 md:px-4 scroll-container scrollbar-hide"
                   data-index={index}
+                  style="scroll-snap-type: x proximity;"
                 >
                   {category.data.map((skill) => (
                     <span
-                      class="inline-flex items-center rounded-md bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground whitespace-nowrap"
+                      class="inline-flex items-center rounded-md bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground whitespace-nowrap flex-shrink-0"
+                      style="scroll-snap-align: start;"
                     >
                       {skill.name}
                     </span>
                   ))}
                 </div>
                 <button
-                  class="absolute right-[-16px] top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-slate-900 shadow rounded-full p-1 hover:bg-slate-100 dark:hover:bg-slate-800 scroll-btn-right"
+                  class="hidden md:block absolute right-[-16px] top-1/2 -translate-y-1/2 z-10 bg-white dark:bg-slate-900 shadow rounded-full p-1 hover:bg-slate-100 dark:hover:bg-slate-800 scroll-btn-right"
                   data-index={index}
                   aria-label="Rolar para direita"
                 >

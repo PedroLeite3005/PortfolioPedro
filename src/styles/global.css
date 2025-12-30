@@ -134,4 +134,12 @@
   html::-webkit-scrollbar {
     display: none;
   }
+  /* Esconder scrollbar em containers com scroll */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }
