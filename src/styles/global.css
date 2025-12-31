@@ -120,12 +120,17 @@
   html {
     scroll-behavior: smooth;
     scroll-padding-top: 80px;
+    /* Melhorar responsividade de toque no iOS */
+    -webkit-tap-highlight-color: transparent;
   }
   body {
     @apply bg-background text-foreground;
     /* Esconder scrollbar mas manter funcionalidade */
     -ms-overflow-style: none; /* IE e Edge */
     scrollbar-width: none; /* Firefox */
+    /* Melhorar responsividade de toque no iOS */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   /* Esconder scrollbar no Chrome, Safari e Opera */
   body::-webkit-scrollbar {
@@ -141,5 +146,37 @@
   }
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+  /* Melhorar clicabilidade em links e botões no iOS */
+  a, button {
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  }
+  /* Classe utilitária para elementos clicáveis */
+  .touch-manipulation {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+  }
+  /* Aceleração GPU para corrigir problemas de z-index no iOS */
+  .gpu-accelerated {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+  /* Animação de piscar para indicador de scroll mobile */
+  @keyframes blink {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.3;
+    }
+  }
+  .scroll-arrow {
+    animation: blink 1.5s ease-in-out infinite;
+  }
+  .scroll-arrow-delayed {
+    animation-delay: 0.3s;
   }
 }

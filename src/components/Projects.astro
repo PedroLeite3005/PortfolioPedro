@@ -126,7 +126,7 @@ const hasMoreRepos = repos.length > 6;
             {displayedRepos.map((repo) => {
               const languageColor = languageColors[repo.language] || "bg-gray-400";
               return (
-                <div class="group rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden">
+                <div class="group rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden gpu-accelerated">
                   <div class="p-6">
                     <div class="w-full h-48 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
                       <div class="absolute inset-0 bg-black/20"></div>
@@ -149,9 +149,15 @@ const hasMoreRepos = repos.length > 6;
 
                     <div class="mb-4">
                       <div class="flex items-start justify-between gap-2 mb-2">
-                        <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        <a
+                          href={repo.html_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`Abrir repositório ${formatRepoName(repo.name)} no GitHub`}
+                          class="text-lg font-semibold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors hover:underline cursor-pointer touch-manipulation relative z-10"
+                        >
                           {formatRepoName(repo.name)}
-                        </h3>
+                        </a>
                         <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                           {repo.homepage && (
                             <a
@@ -159,7 +165,7 @@ const hasMoreRepos = repos.length > 6;
                               target="_blank"
                               rel="noopener noreferrer"
                               aria-label={`Abrir homepage do projeto ${formatRepoName(repo.name)}`}
-                              class="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded"
+                              class="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded cursor-pointer touch-manipulation relative z-20"
                             >
                               <svg class="w-4 h-4 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <title>Link externo</title>
@@ -167,18 +173,6 @@ const hasMoreRepos = repos.length > 6;
                               </svg>
                             </a>
                           )}
-                          <a
-                            href={repo.html_url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={`Abrir repositório ${formatRepoName(repo.name)} no GitHub`}
-                            class="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded"
-                          >
-                            <svg class="w-4 h-4 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                              <title>Código fonte</title>
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
-                            </svg>
-                          </a>
                         </div>
                       </div>
                       <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2">
@@ -241,7 +235,7 @@ const hasMoreRepos = repos.length > 6;
               {repos.slice(6).map((repo) => {
                 const languageColor = languageColors[repo.language] || "bg-gray-400";
                 return (
-                  <div class="group rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden">
+                  <div class="group rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden gpu-accelerated">
                     <div class="p-6">
                       <div class="w-full h-48 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-lg mb-4 flex items-center justify-center relative overflow-hidden">
                         <div class="absolute inset-0 bg-black/20"></div>
@@ -264,9 +258,15 @@ const hasMoreRepos = repos.length > 6;
 
                       <div class="mb-4">
                         <div class="flex items-start justify-between gap-2 mb-2">
-                          <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                          <a
+                            href={repo.html_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`Abrir repositório ${formatRepoName(repo.name)} no GitHub`}
+                            class="text-lg font-semibold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors hover:underline cursor-pointer touch-manipulation relative z-10"
+                          >
                             {formatRepoName(repo.name)}
-                          </h3>
+                          </a>
                           <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                             {repo.homepage && (
                               <a
@@ -274,7 +274,7 @@ const hasMoreRepos = repos.length > 6;
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 aria-label={`Abrir homepage do projeto ${formatRepoName(repo.name)}`}
-                                class="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded"
+                                class="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded cursor-pointer touch-manipulation relative z-20"
                               >
                                 <svg class="w-4 h-4 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                   <title>Link externo</title>
@@ -282,18 +282,6 @@ const hasMoreRepos = repos.length > 6;
                                 </svg>
                               </a>
                             )}
-                            <a
-                              href={repo.html_url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              aria-label={`Abrir repositório ${formatRepoName(repo.name)} no GitHub`}
-                              class="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded"
-                            >
-                              <svg class="w-4 h-4 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                                <title>Código fonte</title>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
-                              </svg>
-                            </a>
                           </div>
                         </div>
                         <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2">
@@ -356,7 +344,7 @@ const hasMoreRepos = repos.length > 6;
               <button
                 id="show-more-btn"
                 aria-label="Mostrar todos os projetos"
-                class="inline-flex items-center justify-center gap-2 rounded-md border border-input bg-background px-6 py-3 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+                class="inline-flex items-center justify-center gap-2 rounded-md border border-input bg-background px-6 py-3 text-sm font-medium hover:bg-accent hover:text-accent-foreground cursor-pointer touch-manipulation"
               >
                 <span id="show-more-text">Mostrar Todos os {repos.length} Projetos</span>
               </button>

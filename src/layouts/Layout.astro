@@ -1,6 +1,8 @@
 ---
 import "../styles/global.css";
 import Navbar from "@components/Navbar";
+import { getImage } from "astro:assets";
+import avatarImage from "/public/AvatarPedro.png";
 
 interface Props {
 	title?: string;
@@ -11,6 +13,9 @@ const {
 	title = "Pedro Bastos Leite",
 	description = "Desenvolvedor e estudante de Ciência da Computação na PUCPR. Estagiário em Desenvolvimento Web com experiência em Laravel, APIs e tecnologias modernas. Portfólio com projetos e habilidades.",
 } = Astro.props;
+
+// Obter URL otimizada da imagem
+const optimizedAvatar = await getImage({ src: avatarImage, width: 32, height: 32 });
 ---
 
 <!doctype html>
@@ -35,7 +40,7 @@ const {
 		</script>
 	</head>
 	<body class="min-h-screen flex flex-col dark:bg-slate-950 overflow-auto">
-		<Navbar client:load />
+		<Navbar client:load avatarImage={optimizedAvatar.src} />
 		<main class="w-full h-full overflow-auto">
 			<slot />
 		</main>

@@ -4,7 +4,11 @@ import { ThemeToggle } from "./theme/ThemeToggle";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 
-export function Navbar() {
+interface NavbarProps {
+	avatarImage?: any;
+}
+
+export function Navbar({ avatarImage }: NavbarProps) {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 
 	useEffect(() => {
@@ -69,7 +73,7 @@ export function Navbar() {
 
 	// Fechar menu ao clicar fora
 	useEffect(() => {
-		const handleClickOutside = (e: MouseEvent) => {
+		const handleClickOutside = (e: Event) => {
 			const target = e.target as HTMLElement;
 			const nav = document.querySelector('nav');
 			if (isMenuOpen && nav && !nav.contains(target)) {
@@ -80,29 +84,37 @@ export function Navbar() {
 		if (isMenuOpen) {
 			// Usar setTimeout para evitar que o evento seja capturado imediatamente
 			setTimeout(() => {
+				// Suportar tanto click quanto touch para iOS/Safari
 				document.addEventListener('click', handleClickOutside);
+				document.addEventListener('touchend', handleClickOutside);
 			}, 0);
 		}
 
 		return () => {
 			document.removeEventListener('click', handleClickOutside);
+			document.removeEventListener('touchend', handleClickOutside);
 		};
 	}, [isMenuOpen]);
 
 	return (
-		<nav className="w-full border-b-2 relative z-50 bg-white dark:bg-slate-950 sticky top-0">
+		<nav className="w-full border-b-2 relative z-50 bg-white dark:bg-slate-950 sticky top-0 gpu-accelerated">
 			<div className="container mx-auto px-4 py-4">
 				<div className="flex items-center justify-between">
-					<a href="/" className="text-xl font-bold">
+					<a href="/" className="text-xl font-bold flex items-center gap-2">
 						Pedro Bastos Leite
+						{avatarImage ? (
+							<img src={avatarImage.src || avatarImage} alt="Pedro Bastos Leite" width={32} height={32} loading="eager" />
+						) : (
+							<img src="/AvatarPedro.png" alt="Pedro Bastos Leite" width={32} height={32} loading="eager" />
+						)}
 					</a>
 					
 					{/* Desktop Menu */}
 					<div className="hidden md:flex items-center gap-9">
-						<a href="#about" className="hover:text-primary transition-colors text-sm font-medium">Sobre mim</a>
-						<a href="#skills" className="hover:text-primary transition-colors text-sm font-medium">Tecnologias</a>
-						<a href="#projects" className="hover:text-primary transition-colors text-sm font-medium">Projetos</a>
-						<a href="#contact" className="hover:text-primary transition-colors text-sm font-medium">Conecte-se</a>
+						<a href="#about" className="hover:text-primary transition-colors text-sm font-medium cursor-pointer touch-manipulation">Sobre mim</a>
+						<a href="#skills" className="hover:text-primary transition-colors text-sm font-medium cursor-pointer touch-manipulation">Tecnologias</a>
+						<a href="#projects" className="hover:text-primary transition-colors text-sm font-medium cursor-pointer touch-manipulation">Projetos</a>
+						<a href="#contact" className="hover:text-primary transition-colors text-sm font-medium cursor-pointer touch-manipulation">Conecte-se</a>
 						<ThemeToggle />
 					</div>
 
@@ -111,7 +123,7 @@ export function Navbar() {
 						<ThemeToggle />
 						<button
 							onClick={() => setIsMenuOpen(!isMenuOpen)}
-							className="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+							className="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer touch-manipulation"
 							aria-label={isMenuOpen ? "Fechar menu" : "Abrir menu"}
 							aria-expanded={isMenuOpen}
 						>
@@ -135,7 +147,7 @@ export function Navbar() {
 					<div className="flex flex-col gap-4 pb-4">
 						<a 
 							href="#about" 
-							className="hover:text-primary transition-colors text-sm font-medium py-2 cursor-pointer"
+							className="hover:text-primary transition-colors text-sm font-medium py-2 cursor-pointer touch-manipulation"
 							onClick={(e) => {
 								setIsMenuOpen(false);
 							}}
@@ -144,7 +156,7 @@ export function Navbar() {
 						</a>
 						<a 
 							href="#skills" 
-							className="hover:text-primary transition-colors text-sm font-medium py-2 cursor-pointer"
+							className="hover:text-primary transition-colors text-sm font-medium py-2 cursor-pointer touch-manipulation"
 							onClick={(e) => {
 								setIsMenuOpen(false);
 							}}
@@ -153,7 +165,7 @@ export function Navbar() {
 						</a>
 						<a 
 							href="#projects" 
-							className="hover:text-primary transition-colors text-sm font-medium py-2 cursor-pointer"
+							className="hover:text-primary transition-colors text-sm font-medium py-2 cursor-pointer touch-manipulation"
 							onClick={(e) => {
 								setIsMenuOpen(false);
 							}}
@@ -162,7 +174,7 @@ export function Navbar() {
 						</a>
 						<a 
 							href="#contact" 
-							className="hover:text-primary transition-colors text-sm font-medium py-2 cursor-pointer"
+							className="hover:text-primary transition-colors text-sm font-medium py-2 cursor-pointer touch-manipulation"
 							onClick={(e) => {
 								setIsMenuOpen(false);
 							}}
