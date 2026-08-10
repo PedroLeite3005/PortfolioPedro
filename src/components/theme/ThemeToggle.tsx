@@ -13,7 +13,7 @@ import {
 type Theme = "light" | "dark" | "system"
 
 export function ThemeToggle() {
-  const [theme, setThemeState] = useState<Theme>("system")
+  const [, setThemeState] = useState<Theme>("system")
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {

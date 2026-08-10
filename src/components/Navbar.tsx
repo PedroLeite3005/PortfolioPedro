@@ -149,6 +149,7 @@ export function Navbar({ avatarImage }: NavbarProps) {
 							href="#about" 
 							className="hover:text-primary transition-colors text-sm font-medium py-2 cursor-pointer touch-manipulation"
 							onClick={(e) => {
+								console.log(e);
 								setIsMenuOpen(false);
 							}}
 						>
@@ -158,6 +159,7 @@ export function Navbar({ avatarImage }: NavbarProps) {
 							href="#skills" 
 							className="hover:text-primary transition-colors text-sm font-medium py-2 cursor-pointer touch-manipulation"
 							onClick={(e) => {
+								console.log(e)
 								setIsMenuOpen(false);
 							}}
 						>
@@ -167,6 +169,7 @@ export function Navbar({ avatarImage }: NavbarProps) {
 							href="#projects" 
 							className="hover:text-primary transition-colors text-sm font-medium py-2 cursor-pointer touch-manipulation"
 							onClick={(e) => {
+								console.log(e);
 								setIsMenuOpen(false);
 							}}
 						>
@@ -176,6 +179,7 @@ export function Navbar({ avatarImage }: NavbarProps) {
 							href="#contact" 
 							className="hover:text-primary transition-colors text-sm font-medium py-2 cursor-pointer touch-manipulation"
 							onClick={(e) => {
+								console.log(e);
 								setIsMenuOpen(false);
 							}}
 						>

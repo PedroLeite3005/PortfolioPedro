@@ -71,7 +71,7 @@ const getIcon = (iconName: string) => {
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const scrollIntervals: Record<number, NodeJS.Timeout | null> = {};
+  const scrollIntervals: Record<number, ReturnType<typeof setInterval> | null> = {};
 
     const startScroll = (index: number, direction: 'left' | 'right') => {
       const container = document.querySelector(`.scroll-container[data-index="${index}"]`) as HTMLElement;
